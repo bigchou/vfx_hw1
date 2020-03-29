@@ -22,7 +22,7 @@ parser.add_argument("--annofile",type=str,help="path to the file containing imag
 parser.add_argument("--imgfolder",type=str,help="path to the folder containing list of images with different shutter speeds")
 parser.add_argument("--outfolder",type=str,help="path to the folder storing your results")
 # MTB-specific arguments
-parser.add_argument('--MTB',action="store_true")
+parser.add_argument('--MTB',action="store_true",help="set MTB flag to perform MTB")
 parser.add_argument("--depth",default=6,type=int,help="search depth used in MTB")
 # Devebec-specific arguments
 parser.add_argument("--l",default=50,type=int,help="larger value means the response curve is more smooth")
@@ -46,11 +46,12 @@ if __name__ == "__main__":
     images, shutters = loadData(annofile=arg.annofile,imgfolder=arg.imgfolder)
     # alignment stage
     if arg.MTB:
+        print("perform MTB")
         mid_ind = len(images)//2
         mid = images[mid_ind]
         for i,img in enumerate(images):
             if i == mid_ind:continue
-            best_x, best_y = MTB(mid, img, shift_bits=depth)
+            best_x, best_y = MTB(mid, img, shift_bits=arg.depth)
             h, w = img.shape[:2]
             align = cv2.warpAffine(img,np.float32([[1,0,best_x],[0,1,best_y]]),(w,h))
             images[i] = align

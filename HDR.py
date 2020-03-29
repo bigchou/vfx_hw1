@@ -5,6 +5,25 @@ import matplotlib.pyplot as plt
 class Debevec:
     """HDR imaging using Debevec algorithm.
 
+    Parameters
+    ----------
+    HDR : the dynamic range image
+
+    images : list of images with shape (batch, height, weight, channel)
+
+    shutters : list of shutter speeds
+
+    l : set larger l to emphasize the smoothness term (the response curve will becomre more smooth)
+
+    num_chosen : number of chosen pixel location
+
+    outpath : the path to the folder used for saving response curve image
+
+    Remark
+    -------
+    My implementation is based on this paper:
+    Paul E. Debevec et al., "Recovering High Dynamic Range Radiance Maps from Photographs", Siggraph 1997
+    To learn more, please refer to this link: http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf
     """
     def __init__(self,images,shutters,l,num_chosen,outpath):
         # Define variables

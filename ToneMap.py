@@ -68,12 +68,12 @@ def Reinhard2002(HDR,a=0.00125,phi=1.0,num_scale=1,saturation=1.0,isGlobalMode=T
     #MAIN
     Ld = None
     if isGlobalMode:
-        print("Enable Global Operator Mode")
+        print("[Reinhard2002] Enable Global Operator Mode")
         Lwhite = np.max(Lw)#By default we set Lwhite to the maximum luminance in the scene based on the original paper
         Ld = Lm/(1.0+Lm)#equation 3
         Ld = Ld * (1.0+Lm/(Lwhite**2))#equation 4
     else:
-        print("Enable Local Operator Mode")
+        print("[Reinhard2002] Enable Local Operator Mode")
         epsilon=0.05#the threshold set to 0.05 based on the original paper
         smax = np.zeros((h,w),dtype=np.uint8)
         mark = np.zeros((h,w),dtype=bool)
@@ -121,6 +121,7 @@ def Reinhard2005(HDR,f,m,a,c):
     E Reinhard et al., "Dynamic range reduction inspired by photoreceptor physiology", TVCG 2005
     To learn more, please refer to this link: http://erikreinhard.com/papers/tvcg2005.pdf
     """
+    print("[Reinhard2005]")
     h, w, channel = HDR.shape
     B, G, R = HDR[:,:,0], HDR[:,:,1], HDR[:,:,2]
     L = 0.2125*R + 0.7154*G + 0.0721*B
@@ -179,7 +180,7 @@ if __name__ == "__main__":
             shutters.append(shutter)
     images = np.array(images)
     shutters = np.array(shutters,dtype=np.float32)
-    HDR = Debevec(images,shutters,l=50,num_chosen=50,outpath=os.path.join(outpath,exp_id)).process()
+    HDR = Debevec(images,shutters,l=50,min_chosen=50,outpath=os.path.join(outpath,exp_id)).process()
     # ===========================================================
     out = os.path.join(outpath,exp_id,"Reinhard2002_Global.jpg")
     cv2.imwrite(out,Reinhard2002(HDR,a=0.6))

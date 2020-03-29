@@ -15,7 +15,7 @@ class Debevec:
 
     l : set larger l to emphasize the smoothness term (the response curve will becomre more smooth)
 
-    num_chosen : number of chosen pixel location
+    min_chosen : number of chosen pixel location should at least more than min_chosen
 
     outpath : the path to the folder used for saving response curve image
 
@@ -25,12 +25,12 @@ class Debevec:
     Paul E. Debevec et al., "Recovering High Dynamic Range Radiance Maps from Photographs", Siggraph 1997
     To learn more, please refer to this link: http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf
     """
-    def __init__(self,images,shutters,l,num_chosen,outpath):
+    def __init__(self,images,shutters,l,min_chosen,outpath):
         # Define variables
         self.B = np.log(shutters)#ln(deltaT_j)
         self.l = l#interpolation weight
         self.w = self.w()#weight function
-        self.num_chosen = num_chosen#number of chosen pixel location
+        self.min_chosen = min_chosen#minimum of number of chosen pixel location
         self.outpath = outpath#output path for response curve
         self.images = images#list of images
 
@@ -40,7 +40,7 @@ class Debevec:
         channel = self.images.shape[-1]
         for i in range(channel):
             print("handle ",color[i]," channel.......................................")
-            Z = self.pick(self.images[:,:,:,i],num_chosen=self.num_chosen)#pick pixel location
+            Z = self.pick(self.images[:,:,:,i],min_chosen=self.min_chosen)#pick pixel location
             g = self.getG(Z,self.B,self.l)
             self.drawCurve(Z,g,i)
             radimap = self.getRadiMap(self.images[:,:,:,i],g)
@@ -57,7 +57,7 @@ class Debevec:
                 w.append(1e-4 if z == 255 else float(255.0-z)/127.0)
         return np.array(w)
 
-    def pick(self,images,num_chosen=50):
+    def pick(self,images,min_chosen=50):
         img = images[len(images)//2]#middle one should be more plausible
         # Find edge area
         edge = cv2.Canny(img,100,200)
@@ -77,8 +77,8 @@ class Debevec:
             if not pos_table[i]:continue
             row, col = random.choice(pos_table[i])
             Z.append([images[i,row,col] for i in range(numimg)])
-        if len(Z) < num_chosen:
-            raise Exception("[ERROR] number of chosen locations should be more than %d"%(num_chosen))
+        if len(Z) < min_chosen:
+            raise Exception("[ERROR] number of chosen locations should be more than %d"%(min_chosen))
         print("select %d locations"%(len(Z)))
         return np.array(Z,dtype=np.uint8)
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
             shutters.append(shutter)
     images = np.array(images)
     shutters = np.array(shutters,dtype=np.float32)
-    HDR = Debevec(images,shutters,l=50,num_chosen=50,outpath=os.path.join(outpath,exp_id)).process()
+    HDR = Debevec(images,shutters,l=50,min_chosen=50,outpath=os.path.join(outpath,exp_id)).process()
     cv2.imwrite(
         os.path.join(outpath,exp_id,"HDR.hdr"),
         cv2.normalize(HDR, None, alpha=0, beta=1.0, norm_type=cv2.NORM_MINMAX)

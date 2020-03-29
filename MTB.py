@@ -78,21 +78,31 @@ def MTB(dst,src,shift_bits,lower=40,upper=60):
 if __name__ == "__main__":
     # Image data courtesy of https://www.mathworks.com/help/images/ref/imregmtb.html
     depth = 6
-    datafolder = os.path.join("exp","MTB")
+    outpath = "result"
+    datafolder = "exp"
+    exp_id = "MTB"
     dstpath = "a.jpg"
+    if not os.path.exists(outpath):
+        print("create directory ",outpath)
+        os.mkdir(outpath)
+    if not os.path.exists(os.path.join(outpath,exp_id)):
+        print("create directory ",os.path.join(outpath,exp_id))
+        os.mkdir(os.path.join(outpath,exp_id))
+    # ===========================================================
     print("reading dst image: ",dstpath)
-    dst = cv2.imread(os.path.join(datafolder,dstpath))
+    dst = cv2.imread(os.path.join(datafolder,exp_id,dstpath))
     vis = copy.deepcopy(dst)# for visualization purpose
-    srcpaths = [i for i in os.listdir(datafolder) if os.path.splitext(i)[-1] == ".jpg" and i != dstpath]
+    srcpaths = [i for i in os.listdir(os.path.join(datafolder,exp_id)) if os.path.splitext(i)[-1] == ".jpg" and i != dstpath]
     for srcpath in srcpaths:
         print("reading src image: ",srcpath)
-        src = cv2.imread(os.path.join(datafolder,srcpath))
+        src = cv2.imread(os.path.join(os.path.join(datafolder,exp_id),srcpath))
         best_x, best_y = MTB(dst, src, shift_bits=depth)
         h, w = src.shape[:2]
         align = cv2.warpAffine(src,np.float32([[1,0,best_x],[0,1,best_y]]),(w,h))
         cv2.line(align, (0, 0), (0, h), (255,0,0), 3)# draw a line for debug purpose
         vis = np.concatenate((vis,align),axis=1)
     cv2.line(vis, (0, 100), (vis.shape[1], 100), (0,255,0), 3)# draw a line for debug purpose
-    outpath = "MTB_result.jpg"
+    # ===========================================================
+    outpath = os.path.join(outpath,exp_id,"MTB_result.jpg")
     cv2.imwrite(outpath,vis)
     print("MTB result is saved to ",outpath)

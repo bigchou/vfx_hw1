@@ -6,7 +6,6 @@ def MTB(dst,src,shift_bits,lower=40,upper=60):
 
     Parameters
     ----------
-    y : np.ndarray [shape=(n,)]
 
     dst : the fixed objective image
 

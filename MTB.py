@@ -90,11 +90,13 @@ if __name__ == "__main__":
     # ===========================================================
     print("reading dst image: ",dstpath)
     dst = cv2.imread(os.path.join(datafolder,exp_id,dstpath))
+    origin_vis = copy.deepcopy(dst)# for visualization purpose
     vis = copy.deepcopy(dst)# for visualization purpose
     srcpaths = [i for i in os.listdir(os.path.join(datafolder,exp_id)) if os.path.splitext(i)[-1] == ".jpg" and i != dstpath]
     for srcpath in srcpaths:
         print("reading src image: ",srcpath)
         src = cv2.imread(os.path.join(os.path.join(datafolder,exp_id),srcpath))
+        origin_vis = np.concatenate((origin_vis,src),axis=1)
         best_x, best_y = MTB(dst, src, shift_bits=depth)
         h, w = src.shape[:2]
         align = cv2.warpAffine(src,np.float32([[1,0,best_x],[0,1,best_y]]),(w,h))
@@ -102,6 +104,9 @@ if __name__ == "__main__":
         vis = np.concatenate((vis,align),axis=1)
     cv2.line(vis, (0, 100), (vis.shape[1], 100), (0,255,0), 3)# draw a line for debug purpose
     # ===========================================================
+    outpath = os.path.join(outpath,exp_id,"origin.jpg")
+    cv2.imwrite(outpath,origin_vis)
+    print("origin input is saved to ",outpath)
     outpath = os.path.join(outpath,exp_id,"MTB_result.jpg")
     cv2.imwrite(outpath,vis)
     print("MTB result is saved to ",outpath)

@@ -134,7 +134,7 @@ class Debevec:
             if radimap is None: raise Excption("[ERROR] Radiance Map is None")
         return np.exp(radimap)
 
-def drawHDR(HDR,outfolder,color=["R","G","B"]):
+def drawHDR(HDR,outfolder,color=["Blue","Green","Red"]):
     from mpl_toolkits import axes_grid1
     def add_colorbar(im, aspect=20, pad_fraction=0.5, **kwargs):
         """Add a vertical color bar to an image plot.
@@ -151,7 +151,6 @@ def drawHDR(HDR,outfolder,color=["R","G","B"]):
         cax = divider.append_axes("right", size=width, pad=pad)
         plt.sca(current_ax)
         return im.axes.figure.colorbar(im, cax=cax, **kwargs)
-    vmin, vmax = np.min(HDR), np.max(HDR)
     for i in range(HDR.shape[-1]):
         im = plt.imshow(HDR[:,:,i],cmap="jet",norm=matplotlib.colors.PowerNorm(gamma=0.14))
         add_colorbar(im)#plt.colorbar()

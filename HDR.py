@@ -1,4 +1,4 @@
-import cv2, os, random
+import cv2, os, random, matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -134,6 +134,33 @@ class Debevec:
             if radimap is None: raise Excption("[ERROR] Radiance Map is None")
         return np.exp(radimap)
 
+def drawHDR(HDR,outfolder,color=["R","G","B"]):
+    from mpl_toolkits import axes_grid1
+    def add_colorbar(im, aspect=20, pad_fraction=0.5, **kwargs):
+        """Add a vertical color bar to an image plot.
+        
+        Remark
+        -------
+        This function is referred to the Matthias's implementation
+        To learn more, please see this link: https://stackoverflow.com/questions/18195758/set-matplotlib-colorbar-size-to-match-graph
+        """
+        divider = axes_grid1.make_axes_locatable(im.axes)
+        width = axes_grid1.axes_size.AxesY(im.axes, aspect=1./aspect)
+        pad = axes_grid1.axes_size.Fraction(pad_fraction, width)
+        current_ax = plt.gca()
+        cax = divider.append_axes("right", size=width, pad=pad)
+        plt.sca(current_ax)
+        return im.axes.figure.colorbar(im, cax=cax, **kwargs)
+    vmin, vmax = np.min(HDR), np.max(HDR)
+    for i in range(HDR.shape[-1]):
+        im = plt.imshow(HDR[:,:,i],cmap="jet",norm=matplotlib.colors.PowerNorm(gamma=0.14))
+        add_colorbar(im)#plt.colorbar()
+        out = os.path.join(outfolder,color[i]+".png")
+        plt.title(color[i]+"_channel")
+        plt.savefig(out)
+        plt.close()
+        print("save HDR to ",out)
+
 if __name__ == "__main__":
     outpath = "result"
     datafolder = "exp"
@@ -159,7 +186,4 @@ if __name__ == "__main__":
     images = np.array(images)
     shutters = np.array(shutters,dtype=np.float32)
     HDR = Debevec(images,shutters,l=50,min_chosen=50,outpath=os.path.join(outpath,exp_id)).process()
-    cv2.imwrite(
-        os.path.join(outpath,exp_id,"HDR.hdr"),
-        cv2.normalize(HDR, None, alpha=0, beta=1.0, norm_type=cv2.NORM_MINMAX)
-    )#see results just applying minmax normalization
+    drawHDR(HDR,os.path.join(outpath,exp_id))

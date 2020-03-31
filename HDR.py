@@ -34,7 +34,7 @@ class Debevec:
         self.outpath = outpath#output path for response curve
         self.images = images#list of images
 
-    def process(self,color=["Blue","Green","Red"]):
+    def process(self,color=["Blue","Green","Red"],drawCurve=False):
         # MAIN
         HDR = []
         channel = self.images.shape[-1]
@@ -42,7 +42,7 @@ class Debevec:
             print("handle ",color[i]," channel.......................................")
             Z = self.pick(self.images[:,:,:,i],min_chosen=self.min_chosen)#pick pixel location
             g = self.getG(Z,self.B,self.l)
-            self.drawCurve(Z,g,i)
+            if drawCurve:self.drawCurve(Z,g,i)
             radimap = self.getRadiMap(self.images[:,:,:,i],g)
             HDR.append(radimap)
         HDR = np.stack(HDR,axis=2)
@@ -184,5 +184,5 @@ if __name__ == "__main__":
             shutters.append(shutter)
     images = np.array(images)
     shutters = np.array(shutters,dtype=np.float32)
-    HDR = Debevec(images,shutters,l=50,min_chosen=50,outpath=os.path.join(outpath,exp_id)).process()
+    HDR = Debevec(images,shutters,l=50,min_chosen=50,outpath=os.path.join(outpath,exp_id)).process(drawCurve=True)
     drawHDR(HDR,os.path.join(outpath,exp_id))

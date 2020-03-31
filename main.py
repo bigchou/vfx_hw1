@@ -1,6 +1,6 @@
 import cv2, os, argparse, sys, time, json
 import numpy as np
-from HDR import Debevec
+from HDR import Debevec, drawHDR
 from ToneMap import Reinhard2002, Reinhard2005
 from MTB import MTB
 
@@ -21,11 +21,13 @@ parser = argparse.ArgumentParser(description='VFX HW1')
 parser.add_argument("--annofile",type=str,help="path to the file containing image path and shutter speed")
 parser.add_argument("--imgfolder",type=str,help="path to the folder containing list of images with different shutter speeds")
 parser.add_argument("--outfolder",type=str,help="path to the folder storing your results")
+parser.add_argument("--drawHDR",action="store_true",help="draw HDR real image")
 # MTB-specific arguments
 parser.add_argument('--MTB',action="store_true",help="set MTB flag to perform MTB")
 parser.add_argument("--depth",default=6,type=int,help="search depth used in MTB")
 # Devebec-specific arguments
-parser.add_argument("--l",default=50,type=int,help="larger value means the response curve is more smooth")
+parser.add_argument("--l",default=50,type=float,help="larger value means the response curve is more smooth")
+parser.add_argument("--drawCurve",action="store_true",help="draw Curve")
 parser.add_argument("--min_chosen",default=50,type=int,help="number of chosen pixel location should at least more than min_chosen")
 # ToneMap-specific arguments
 parser.add_argument("--tone_method",default="Reinhard2002Global",help="the method should be Reinhard2002Global, Reinhard2002Local or Reinhard2005 only")
@@ -56,7 +58,9 @@ if __name__ == "__main__":
             align = cv2.warpAffine(img,np.float32([[1,0,best_x],[0,1,best_y]]),(w,h))
             images[i] = align
     # HDR stage
-    HDR = Debevec(images,shutters,l=arg.l,min_chosen=arg.min_chosen,outpath=arg.outfolder).process()
+    HDR = Debevec(images,shutters,l=arg.l,min_chosen=arg.min_chosen,outpath=arg.outfolder).process(drawCurve=arg.drawCurve)
+    if arg.drawHDR:
+        drawHDR(HDR,arg.outfolder)
     # Tone Mapping stage
     out = os.path.join(arg.outfolder,arg.tone_method+".jpg")
     if arg.tone_method == "Reinhard2002Global":

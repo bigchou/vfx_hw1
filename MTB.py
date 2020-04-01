@@ -79,8 +79,16 @@ if __name__ == "__main__":
     depth = 6
     outpath = "result"
     datafolder = "exp"
-    exp_id = "MTB"
-    dstpath = "a.jpg"
+
+
+    # UNCOMMENT THIS PART IF YOU WANT TO USE MATLAB PICTURE
+    exp_id, dstpath = "MTB", "a.jpg"
+
+    # UNCOMMENT THIS PART IF YOU WANT TO USE MY EXPERIMENT PICTURE
+    #exp_id, dstpath = "ex_2", "DSCF6038.jpg"
+
+
+
     if not os.path.exists(outpath):
         print("create directory ",outpath)
         os.mkdir(outpath)
@@ -104,9 +112,9 @@ if __name__ == "__main__":
         vis = np.concatenate((vis,align),axis=1)
     cv2.line(vis, (0, 100), (vis.shape[1], 100), (0,255,0), 3)# draw a line for debug purpose
     # ===========================================================
-    outpath = os.path.join(outpath,exp_id,"origin.jpg")
-    cv2.imwrite(outpath,origin_vis)
-    print("origin input is saved to ",outpath)
-    outpath = os.path.join(outpath,exp_id,"MTB_result.jpg")
-    cv2.imwrite(outpath,vis)
-    print("MTB result is saved to ",outpath)
+    out = os.path.join(outpath,exp_id,"origin.jpg")
+    cv2.imwrite(out,origin_vis)
+    print("origin input is saved to ",out)
+    out = os.path.join(outpath,exp_id,"MTB_result.jpg")
+    cv2.imwrite(out,vis)
+    print("MTB result is saved to ",out)

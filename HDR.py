@@ -186,3 +186,7 @@ if __name__ == "__main__":
     shutters = np.array(shutters,dtype=np.float32)
     HDR = Debevec(images,shutters,l=50,min_chosen=50,outpath=os.path.join(outpath,exp_id)).process(drawCurve=True)
     drawHDR(HDR,os.path.join(outpath,exp_id))
+    out = os.path.join(outpath,exp_id,"HDR.exr")
+    print(HDR.dtype)
+    cv2.imwrite(out,HDR)
+    print("save HDR as *.exr to ",out)

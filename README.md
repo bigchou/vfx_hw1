@@ -62,6 +62,7 @@ bash run.sh
 | <img src="result/ex_2/ResponseCurve_ro.png" width="320" height="240">      | <img src="result/ex_2/ResponseCurve_go.png" width="320" height="240"> | <img src="result/ex_2/ResponseCurve_bo.png" width="320" height="240"> |
 | <img src="result/ex_2/Red.png" width="320" height="240">      | <img src="result/ex_2/Green.png" width="320" height="240">      |   <img src="result/ex_2/Blue.png" width="320" height="240"> |
 
+Note. To view the assembled high dynamic range image, plase drag [*.hdr](result/ex_2/HDR.exr) file to this [website](https://viewer.openhdr.org/).
 
 
 

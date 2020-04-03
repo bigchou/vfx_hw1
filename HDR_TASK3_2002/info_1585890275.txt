@@ -1,0 +1,37 @@
+--tone_method
+Reinhard2002Local
+--annofile
+exp/ex_2/task2_ss_ex2.txt
+--imgfolder
+exp/ex_2
+--MTB
+--key
+0.9
+--phi
+5.0
+--num_scale
+1
+--outfolder
+HDR_TASK3_2002
+--drawHDR
+--drawCurve
+=============================
+{
+  "annofile": "exp/ex_2/task2_ss_ex2.txt",
+  "imgfolder": "exp/ex_2",
+  "outfolder": "HDR_TASK3_2002",
+  "drawHDR": true,
+  "MTB": true,
+  "depth": 6,
+  "l": 50,
+  "drawCurve": true,
+  "min_chosen": 50,
+  "tone_method": "Reinhard2002Local",
+  "key": 0.9,
+  "saturation": 1.0,
+  "phi": 5.0,
+  "num_scale": 1,
+  "contrast": 0.6,
+  "adaptation": 1.0,
+  "chromatic": 0.8
+}

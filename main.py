@@ -61,6 +61,9 @@ if __name__ == "__main__":
     HDR = Debevec(images,shutters,l=arg.l,min_chosen=arg.min_chosen,outpath=arg.outfolder).process(drawCurve=arg.drawCurve)
     if arg.drawHDR:
         drawHDR(HDR,arg.outfolder)
+        out = os.path.join(arg.outfolder,"HDR.exr")
+        cv2.imwrite(out,HDR)
+        print("save HDR as *.exr to ",out)
     # Tone Mapping stage
     out = os.path.join(arg.outfolder,arg.tone_method+".jpg")
     if arg.tone_method == "Reinhard2002Global":
